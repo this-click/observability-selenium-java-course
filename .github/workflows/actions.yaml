@@ -1,0 +1,32 @@
+name: on push
+on:
+  push:
+    branch:
+      -  "**"
+  schedule:
+    - cron: '*/10 * * * *' # this will run every 10th minute, https://crontab.guru/#*/10_*_*_*_*
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    env:
+      RUNNER_OS: true
+      HEADLESS_CHROME: true
+    steps:
+      - name: Set start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Run tests with maven
+        working-directory: webdriver_java
+        run: mvn test
+      - name: Collect build data
+        working-directory: webdriver_java
+        env:
+          PUSHGATEWAY_URL: ${{ secrets.PUSHGATEWAY_URL }}
+        if: always()
+        run: |
+          echo "github_actions_total_duration $(expr $(date +%s) - ${START_TIME})" | curl --data-binary @- ${PUSHGATEWAY_URL}/metrics/job/github_actions
+          ./resources/test_result_script.sh
