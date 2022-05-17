@@ -32,7 +32,7 @@ jobs:
         if: always()
         run: | 
           echo "STEP_START=$(date +%s)" >> GITHUB_ENV
-          echo "STEP_ID='run-maven-tests' >> GITHUB_ENV
+          echo "STEP_ID='run-maven-tests'" >> GITHUB_ENV
       - name: Telemetry - Collect build data
         working-directory: webdriver_java
         env:
