@@ -26,7 +26,7 @@ public class BaseTests {
         if(System.getenv("RUNNER_OS") != null) {
             driverExtention = "-linux";
         };
-        System.setProperty("webdriver.chrome.driver", "resources/chromedriver-old" + driverExtention);
+        System.setProperty("webdriver.chrome.driver", "resources/chromedriver" + driverExtention);
         driver = new EventFiringWebDriver(new ChromeDriver(getChromeOptions()));
         driver.register(new EventReporter());
     }
